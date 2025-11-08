@@ -41,5 +41,3 @@ You can type in commands and see how the server responds in real time, making it
 - **Frontend:** HTML, CSS, JavaScript  
 - **Framework:** Vanilla JavaScript 
 - **Deployment:** Vercel  
-
----

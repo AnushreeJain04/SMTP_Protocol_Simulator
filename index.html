@@ -1,0 +1,420 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>SMTP Protocol Simulator</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <!-- Top Navigation Bar -->
+    <nav class="top-nav">
+        <div class="nav-buttons">
+            <button class="nav-btn" id="learnBtn">📚 Learn</button>
+            <button class="nav-btn" id="developedByBtn">👥 Developed By</button>
+            <button class="nav-btn" id="helpBtn">❓ Help</button>
+            <button class="nav-btn" id="downloadBtn">⬇️ Download</button>
+        </div>
+    </nav>
+
+    <div class="container">
+        <header>
+            <h1>📧 SMTP Protocol Simulator</h1>
+            <p>Interactive visualization of email transmission using SMTP protocol</p>
+        </header>
+
+        <div class="content">
+            <div class="input-section">
+                <div class="info-box">
+                    <h3>About This Simulator</h3>
+                    <p>This tool demonstrates how emails are sent using the Simple Mail Transfer Protocol (SMTP). Configure network conditions and watch the complete transmission process.</p>
+                </div>
+
+                <div class="input-group">
+                    <label>Sender Email</label>
+                    <input type="email" id="senderEmail" placeholder="sender@example.com">
+                </div>
+
+                <div class="input-group">
+                    <label>Recipient Email</label>
+                    <input type="email" id="recipientEmail" placeholder="recipient@example.com">
+                </div>
+
+                <div class="input-group">
+                    <label>Subject</label>
+                    <input type="text" id="subject" placeholder="Email subject">
+                </div>
+
+                <div class="input-group">
+                    <label>Message Body</label>
+                    <textarea id="messageBody" placeholder="Type your message here..."></textarea>
+                </div>
+
+                <div class="input-group">
+                    <label>Attachment (Optional)</label>
+                    <input type="text" id="attachment" placeholder="document.pdf">
+                </div>
+
+                <h3 style="margin: 25px 0 15px; color: #333;">Network Configuration</h3>
+
+                <div class="config-grid">
+                    <div class="input-group">
+                        <label>Server Delay (sec)</label>
+                        <input type="number" id="serverDelay" value="1" min="0" step="0.5">
+                    </div>
+
+                    <div class="input-group">
+                        <label>Network Delay (ms)</label>
+                        <input type="number" id="networkDelay" value="500" min="0" step="100">
+                    </div>
+                </div>
+
+                <div class="input-group">
+                    <label>Packet Loss Rate (%)</label>
+                    <input type="number" id="packetLoss" value="10" min="0" max="90" step="5">
+                </div>
+
+                <h3 style="margin: 25px 0 15px; color: #333;">Receiver Control</h3>
+
+                <div class="input-group">
+                    <label>Receiver Status Management</label>
+                    <button class="send-btn" id="toggleReceiverBtn" style="margin-bottom: 1rem;">
+                        🔄 Toggle Receiver (🟢/🔴)
+                    </button>
+                    <div id="receiverStatus" style="font-weight: bold; font-size: 1.6rem; padding: 1rem; background: rgba(255,255,255,0.5); border-radius: 0.8rem; text-align: center;"></div>
+                </div>
+
+                <button class="send-btn" id="sendBtn">📤 Send Email</button>
+            </div>
+
+            <div class="visualization-section">
+                <div class="progress-section">
+                    <span class="status-badge idle" id="statusBadge">Ready</span>
+                    <div class="progress-bar">
+                        <div class="progress-fill" id="progressFill">0%</div>
+                    </div>
+                </div>
+
+                <div class="network-diagram">
+                    <div class="node">
+                        <div class="node-icon" id="clientNode">💻</div>
+                        <div class="node-label">Client</div>
+                    </div>
+
+                    <div class="connection-line">
+                        <div class="packet" id="packet"></div>
+                    </div>
+
+                    <div class="node">
+                        <div class="node-icon" id="smtpNode">🖥️</div>
+                        <div class="node-label">SMTP Server</div>
+                    </div>
+
+                    <div class="node">
+                        <div class="node-icon" id="recipientNode">📬</div>
+                        <div class="node-label">Recipient Server</div>
+                    </div>
+                </div>
+
+                <div class="stats-grid">
+                    <div class="stat-card">
+                        <div class="stat-value" id="totalPackets">0</div>
+                        <div class="stat-label">Total Packets</div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-value" id="lostPackets">0</div>
+                        <div class="stat-label">Packets Lost</div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-value" id="retransmissions">0</div>
+                        <div class="stat-label">Retransmissions</div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-value" id="queuedEmails">0</div>
+                        <div class="stat-label">Queued Emails</div>
+                    </div>
+                </div>
+
+                <h3 style="margin: 25px 0 15px; color: #333;">SMTP Command Log</h3>
+                <div class="log-section" id="logSection">
+                    <div class="log-entry">System ready. Configure email parameters and click "Send Email" to begin simulation.</div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Modal: Learn -->
+    <div class="modal" id="learnModal">
+        <div class="modal-content large-modal">
+            <span class="close-btn" data-modal="learnModal">&times;</span>
+            <h2>📚 Learn About SMTP Protocol</h2>
+            
+            <div class="modal-section">
+                <h3>What is SMTP?</h3>
+                <p>SMTP (Simple Mail Transfer Protocol) is an application layer protocol used for sending and routing emails across the Internet. It operates over TCP, typically on port 25, using a client–server model. Commands like HELO, MAIL FROM, RCPT TO, DATA, and QUIT control the communication. SMTP ensures reliable delivery between mail servers and supports authentication and encryption through extensions.</p>
+            </div>
+
+            <div class="modal-section">
+                <h3>SMTP Commands</h3>
+                <p><strong>Commands Used in This Simulator:</strong></p>
+                <ul>
+                    <li><strong>HELO/EHLO:</strong> Client introduces itself to the server and lists supported features</li>
+                    <li><strong>MAIL FROM:</strong> Defines the sender's email address</li>
+                    <li><strong>RCPT TO:</strong> Defines the recipient's email address</li>
+                    <li><strong>DATA:</strong> Starts sending the message content and ends with a dot</li>
+                    <li><strong>QUIT:</strong> Ends the SMTP session</li>
+                </ul>
+                
+                <p style="margin-top: 20px;"><strong>Additional SMTP Commands:</strong></p>
+                <ul>
+                    <li><strong>RSET:</strong> Clears the current mail transaction but keeps the connection</li>
+                    <li><strong>VRFY:</strong> Checks if a user or mailbox exists</li>
+                    <li><strong>EXPN:</strong> Shows all members of a mailing list</li>
+                    <li><strong>NOOP:</strong> Tests or keeps the connection alive</li>
+                    <li><strong>STARTTLS:</strong> Switches to a secure encrypted connection</li>
+                    <li><strong>AUTH:</strong> Authenticates the client to the mail server</li>
+                </ul>
+            </div>
+
+            <div class="modal-section">
+                <h3>Store-and-Forward Mechanism</h3>
+                <p>This simulator demonstrates the store-and-forward mechanism used in email systems:</p>
+                <ul>
+                    <li><strong>Receiver Online:</strong> Email is delivered immediately to the recipient's mailbox</li>
+                    <li><strong>Receiver Offline:</strong> Email is stored in the server queue and delivered when receiver comes online</li>
+                    <li><strong>Queue Management:</strong> Server maintains a queue of pending emails</li>
+                    <li><strong>Automatic Delivery:</strong> System checks receiver status periodically and delivers queued emails</li>
+                </ul>
+            </div>
+
+            <div class="modal-section">
+                <h3>How This Project Was Built</h3>
+                <p><strong>Technologies Used:</strong></p>
+                <ul>
+                    <li>HTML for structure and semantic markup</li>
+                    <li>CSS for styling with modern gradients and animations</li>
+                    <li>JavaScript for SMTP protocol simulation logic</li>
+                </ul>
+                <p><strong>Implementation Steps:</strong></p>
+                <ol>
+                    <li>Designed the user interface with input forms and visualization area</li>
+                    <li>Implemented SMTP command sequence (HELO → MAIL FROM → RCPT TO → DATA → QUIT)</li>
+                    <li>Added network simulation with configurable delays and packet loss</li>
+                    <li>Created packet animation system using CSS animations</li>
+                    <li>Built real-time logging system with color-coded entries</li>
+                    <li>Implemented statistics tracking and error handling</li>
+                    <li>Added receiver status management and email queuing system</li>
+                    <li>Implemented store-and-forward mechanism for offline receivers</li>
+                </ol>
+            </div>
+
+            <div class="modal-section">
+                <h3>Network Simulation Features</h3>
+                <ul>
+                    <li><strong>Server Delay:</strong> Simulates processing time at SMTP server</li>
+                    <li><strong>Network Delay:</strong> Simulates packet transmission time</li>
+                    <li><strong>Packet Loss:</strong> Random packet drops with automatic retransmission</li>
+                    <li><strong>Receiver Status:</strong> Toggle receiver online/offline to test queuing</li>
+                    <li><strong>Email Queue:</strong> Emails stored when receiver is offline</li>
+                </ul>
+            </div>
+
+            <div class="modal-section">
+                <h3>📺 Video Tutorial</h3>
+                <div style="position: relative; padding-bottom: 56.25%; height: 0; overflow: hidden; max-width: 100%; margin: 20px 0; border-radius: 10px; box-shadow: 0 4px 6px rgba(0,0,0,0.1);">
+                    <iframe 
+                        style="position: absolute; top: 0; left: 0; width: 100%; height: 100%; border: none; border-radius: 10px;" 
+                        src="https://www.youtube.com/embed/PJo5yOtu7o8" 
+                        title="SMTP Protocol Explained" 
+                        allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" 
+                        allowfullscreen>
+                    </iframe>
+                </div>
+                <p style="text-align: center; color: #666; font-size: 0.9rem; margin-top: 10px;">Watch this video to learn more about how SMTP protocol works</p>
+            </div>
+
+            <div class="modal-section">
+                <h3>References</h3>
+                <ul>
+                    <li>RFC 5321 - Simple Mail Transfer Protocol</li>
+                    <li>RFC 2821 - Simple Mail Transfer Protocol (Previous Standard)</li>
+                    <li>Computer Networks by Andrew S. Tanenbaum</li>
+                    <li>Data Communications and Networking by Forouzan</li>
+                </ul>
+            </div>
+        </div>
+    </div>
+
+    <!-- Modal: Developed By -->
+    <div class="modal" id="developedByModal">
+        <div class="modal-content">
+            <span class="close-btn" data-modal="developedByModal">&times;</span>
+            
+            <div class="team-sections-wrapper">
+                <div class="team-section">
+                    <h2>👥 Developed By</h2>
+                    <div class="team-grid">
+                        <div class="team-member">
+                            <div class="member-photo">
+                                <img src="image/Anushree.jpg" alt="Anushree Jain">
+                            </div>
+                            <div class="member-info">
+                                <h3>Anushree Jain</h3>
+                                <div class="reg-no">24BCE1829</div>
+                            </div>
+                        </div>
+
+                        <div class="team-member">
+                            <div class="member-photo">
+                                <img src="image/Jaya.jpg" alt="Jaya Bakshi">
+                            </div>
+                            <div class="member-info">
+                                <h3>Jaya Bakshi</h3>
+                                <div class="reg-no">24BCE1700</div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="team-section">
+                    <h2>👤 Guided By</h2>
+                    <div class="team-grid">
+                        <div class="team-member">
+                            <div class="member-photo">
+                                <img src="image/Sir.jpg" alt="Dr. Swaminathan Annadurai">
+                            </div>
+                            <div class="member-info">
+                                <h3>Dr. Swaminathan Annadurai</h3>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="project-info">
+                <h3>Project Information</h3>
+                <p><strong>Project:</strong> SMTP Protocol Simulator</p>
+                <p><strong>Course:</strong> Computer Networks</p>
+                <p><strong>Year:</strong> 2025-2026</p>
+                <p><strong>Institution:</strong> Vellore Institute of Technology, Chennai</p>
+            </div>
+        </div>
+    </div>
+
+    <!-- Modal: Help -->
+    <div class="modal" id="helpModal">
+        <div class="modal-content large-modal">
+            <span class="close-btn" data-modal="helpModal">&times;</span>
+            <h2>❓ Help - How to Use This Simulator</h2>
+            
+            <div class="modal-section">
+                <h3>Step 1: Enter Email Details</h3>
+                <p>Fill in the following fields in the left panel:</p>
+                <ul>
+                    <li><strong>Sender Email:</strong> Enter the sender's email address (e.g., alice@example.com)</li>
+                    <li><strong>Recipient Email:</strong> Enter the recipient's email address (e.g., bob@example.com)</li>
+                    <li><strong>Subject:</strong> Type the email subject line</li>
+                    <li><strong>Message Body:</strong> Enter your email message content</li>
+                    <li><strong>Attachment:</strong> (Optional) Enter attachment name like "document.pdf"</li>
+                </ul>
+            </div>
+
+            <div class="modal-section">
+                <h3>Step 2: Configure Network Conditions</h3>
+                <p>Adjust network simulation parameters:</p>
+                <ul>
+                    <li><strong>Server Delay:</strong> Set processing time (0-5 seconds). Higher values simulate slower servers.</li>
+                    <li><strong>Network Delay:</strong> Set packet transmission time (0-2000 ms). Higher values simulate slower networks.</li>
+                    <li><strong>Packet Loss Rate:</strong> Set probability of packet loss (0-90%). Higher values simulate unreliable networks.</li>
+                </ul>
+            </div>
+
+            <div class="modal-section">
+                <h3>Step 3: Control Receiver Status (NEW)</h3>
+                <p>Test the store-and-forward mechanism:</p>
+                <ul>
+                    <li><strong>Toggle Receiver Button:</strong> Click to switch receiver between online (🟢) and offline (🔴) states</li>
+                    <li><strong>Receiver Online:</strong> Emails are delivered immediately</li>
+                    <li><strong>Receiver Offline:</strong> Emails are queued on the server and delivered when receiver comes online</li>
+                    <li><strong>Queued Emails Counter:</strong> Shows number of emails waiting for delivery</li>
+                </ul>
+            </div>
+
+            <div class="modal-section">
+                <h3>Step 4: Send Email</h3>
+                <p>Click the <strong>"📤 Send Email"</strong> button to start the simulation.</p>
+            </div>
+
+            <div class="modal-section">
+                <h3>Understanding the Visualization</h3>
+                <ul>
+                    <li><strong>Network Diagram:</strong> Shows three nodes (Client, SMTP Server, Recipient Server)</li>
+                    <li><strong>Animated Packets:</strong> Blue circles moving between nodes represent data packets</li>
+                    <li><strong>Active Nodes:</strong> Highlighted nodes indicate current processing location</li>
+                    <li><strong>Recipient Node Opacity:</strong> Dimmed when receiver is offline, full brightness when online</li>
+                    <li><strong>Progress Bar:</strong> Shows overall transmission progress (0-100%)</li>
+                    <li><strong>Status Badge:</strong> Displays current status (Ready, Processing, Success, Failed)</li>
+                </ul>
+            </div>
+
+            <div class="modal-section">
+                <h3>Reading the SMTP Log</h3>
+                <p>The log console shows real-time SMTP commands and responses:</p>
+                <ul>
+                    <li><strong style="color: #81e6d9;">Cyan Text (→ CLIENT):</strong> Commands sent by client</li>
+                    <li><strong style="color: #fbd38d;">Orange Text (← SERVER):</strong> Responses from server</li>
+                    <li><strong style="color: #f6e05e;">Yellow Background:</strong> Warnings (packet loss, retransmission, receiver offline)</li>
+                    <li><strong style="color: #fc8181;">Red Background:</strong> Errors (invalid recipient, failures)</li>
+                    <li><strong style="color: #68d391;">Green Background:</strong> Success messages (delivery complete, receiver online)</li>
+                </ul>
+            </div>
+
+            <div class="modal-section">
+                <h3>Understanding Statistics</h3>
+                <ul>
+                    <li><strong>Total Packets:</strong> Number of packets sent during transmission</li>
+                    <li><strong>Packets Lost:</strong> Number of packets that failed to reach destination</li>
+                    <li><strong>Retransmissions:</strong> Number of times packets were resent after loss</li>
+                    <li><strong>Queued Emails:</strong> Number of emails waiting for offline receiver to come online</li>
+                </ul>
+            </div>
+
+            <div class="modal-section">
+                <h3>Testing Scenarios</h3>
+                <p><strong>Error Scenarios:</strong></p>
+                <ul>
+                    <li>Enter "invalid@invalid.com" as recipient to trigger validation error</li>
+                    <li>Set packet loss to 50-70% to see multiple retransmissions</li>
+                    <li>Use high server delay (3-5 sec) to simulate slow servers</li>
+                </ul>
+                <p><strong>Store-and-Forward Testing:</strong></p>
+                <ul>
+                    <li>Set receiver to offline (🔴) before sending email</li>
+                    <li>Watch email get queued on server</li>
+                    <li>Toggle receiver to online (🟢) during transmission</li>
+                    <li>Observe automatic delivery from queue</li>
+                </ul>
+            </div>
+
+            <div class="modal-section">
+                <h3>Execution Flow</h3>
+                <ol>
+                    <li>Client initiates connection with HELO command</li>
+                    <li>Client specifies sender with MAIL FROM command</li>
+                    <li>Client specifies recipient with RCPT TO command</li>
+                    <li>Server validates recipient address</li>
+                    <li>Client sends email content with DATA command</li>
+                    <li>Server accepts and stores message in queue</li>
+                    <li>Server checks recipient server status</li>
+                    <li><strong>If receiver offline:</strong> Email queued, waiting for receiver to come online</li>
+                    <li><strong>If receiver online:</strong> Message forwarded immediately for delivery</li>
+                    <li>Client closes connection with QUIT command</li>
+                    <li>Delivery complete - email delivered to recipient's mailbox</li>
+                </ol>
+            </div>
+        </div>
+    </div>
+
+    <script src="script.js"></script>
+</body>
+</html>

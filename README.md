@@ -39,24 +39,7 @@ You can type in commands and see how the server responds in real time, making it
 
 ## 🛠️ Tech Stack
 - **Frontend:** HTML, CSS, JavaScript  
-- **Framework:** React.js  
+- **Framework:** Vanilla JavaScript 
 - **Deployment:** Vercel  
 
 ---
-
-## 🧾 Installation & Setup
-
-If you want to run the simulator locally:
-
-```bash
-# Clone the repository
-git clone https://github.com/your-username/smtp-protocol-simulator.git
-
-# Go into the project folder
-cd smtp-protocol-simulator
-
-# Install dependencies
-npm install
-
-# Start the development server
-npm start
